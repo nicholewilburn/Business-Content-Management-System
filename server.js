@@ -33,12 +33,8 @@ function start() {
     }
 
 
-//function for connection
-
-const connect = async () => {
-
 // Connect to database
-const db = await mysql.createConnection(
+const db = mysql.createConnection(
   {
     host: process.env.DB_NAME,
     user: process.env.DB_USER,
@@ -49,13 +45,56 @@ const db = await mysql.createConnection(
 );
 
 //Connect to server
-  await app.listen(PORT, () => {
-    console.log(`Server running on port http://localhost/${PORT}`);
+ app.listen(PORT, () => {
+    console.log(`Server running on port http://localhost:${PORT}`);
   });
 
-  await start();
 
-  process.exit(0);
-}
+//View All Departments
+app.get('/api/departments', (req, res) => {
+    const sql = `SELECT id, dept_name AS title FROM department`;
+    
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+         return;
+      }
+      res.json({
+        message: 'success',
+        data: rows
+      });
+    });
+  });
 
-connect();
+//View All Roles
+app.get('/api/roles', (req, res) => {
+    const sql = `SELECT id, title, department_id, salary AS title FROM role`;
+    
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+         return;
+      }
+      res.json({
+        message: 'success',
+        data: rows
+      });
+    });
+  });
+
+ //View All Employees
+app.get('/api/employees', (req, res) => {
+    const sql = `SELECT id, first_name, last_name, roles_id, manager_id AS title FROM employee`;
+    
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+         return;
+      }
+      res.json({
+        message: 'success',
+        data: rows
+      });
+    });
+  });
+ 
