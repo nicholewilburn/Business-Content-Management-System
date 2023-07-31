@@ -98,3 +98,21 @@ app.get('/api/employees', (req, res) => {
     });
   });
  
+  //Add Department
+  app.post('/api/new-department', ({ body }, res) => {
+    const sql = `INSERT INTO department (dept_name)
+      VALUES (?)`;
+    const params = [body.dept_name];
+    
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: body
+      });
+    });
+  });
+  

@@ -4,9 +4,9 @@
 ## Table of contents
 * [Description](#description)
 * [User Story](#installIns)
-* [Usage Instructions](#usage)
-* [Contribution Guidelines](#contribution)
-* [Testing Instructions](#testIns)
+* [Acceptance Criteria](#usage)
+* [Sample Image](#contribution)
+* [Tutorial Video](#testIns)
 * [License](#license)
 * [Questions](#questions)
 
