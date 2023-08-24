@@ -3,8 +3,8 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 require('dotenv').config();
 
-const PORT = process.env.PORT || 3001;
 const app = express();
+const PORT = process.env.PORT || 3001; 
 
 // middleware
 app.use(express.urlencoded({ extended: false }));
@@ -25,8 +25,20 @@ function start() {
       .then((data) => {
     
         const { action } = data;
-
         console.log(action);
+
+      switch (action) {
+        case 'view all departments':
+          viewAllDepartments(); // Call the function to handle the view all departments action
+          break;
+        case 'view all roles':
+          // Call the function to handle the view all roles action
+          break;
+        // ... handle other cases ...
+        default:
+          console.log('Invalid choice');
+          break;
+      }
     
       });
     
@@ -36,18 +48,13 @@ function start() {
 // Connect to database
 const db = mysql.createConnection(
   {
-    host: process.env.DB_NAME,
+    host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: 'business_db'
   },
   console.log(`Connected to the business_db database.`)
 );
-
-//Connect to server
- app.listen(PORT, () => {
-    console.log(`Server running on port http://localhost:${PORT}`);
-  });
 
 
 //View All Departments
@@ -115,4 +122,9 @@ app.get('/api/employees', (req, res) => {
       });
     });
   });
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
   
+  start();
