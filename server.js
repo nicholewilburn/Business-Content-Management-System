@@ -4,46 +4,10 @@ const inquirer = require('inquirer');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3001; 
+const PORT = process.env.PORT || 3001;
 
-// middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-//inquirer function
-function start() {
-
-    inquirer
-      .prompt([
-        {
-            type: 'list',
-            name: 'action',
-            message: 'What would you like to do?',
-            choices: ['view all departments','view all roles', 'view all employees', 'add a department','add a role','add an employee','update an employee role']
-        }
-      ])
-      .then((data) => {
-    
-        const { action } = data;
-        console.log(action);
-
-      switch (action) {
-        case 'view all departments':
-          viewAllDepartments(); // Call the function to handle the view all departments action
-          break;
-        case 'view all roles':
-          // Call the function to handle the view all roles action
-          break;
-        // ... handle other cases ...
-        default:
-          console.log('Invalid choice');
-          break;
-      }
-    
-      });
-    
-    }
-
+// Middleware
+// app.use(express.urlencoded({ extended: false }));
 
 // Connect to database
 const db = mysql.createConnection(
@@ -56,75 +20,153 @@ const db = mysql.createConnection(
   console.log(`Connected to the business_db database.`)
 );
 
+// View All Departments
+function viewAllDepartments() {
+  console.log("viewing all departments");
+// app.get('/api/departments', (req, res) => {
+  const sql = `SELECT * FROM department`;
 
-//View All Departments
-app.get('/api/departments', (req, res) => {
-    const sql = `SELECT id, dept_name AS title FROM department`;
-    
-    db.query(sql, (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-         return;
-      }
-      res.json({
-        message: 'success',
-        data: rows
-      });
-    });
-  });
+  db.promise().query(sql) 
+  .then(([e]) => {
+    console.table(e);
+  })
 
-//View All Roles
-app.get('/api/roles', (req, res) => {
-    const sql = `SELECT id, title, department_id, salary AS title FROM role`;
-    
-    db.query(sql, (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-         return;
-      }
-      res.json({
-        message: 'success',
-        data: rows
-      });
-    });
-  });
+  // db.query(sql, (err, rows) => {
+  //   if (err) {
+  //     res.status(500).json({ error: err.message });
+  //     return;
+  //   }
+    // res.json({
+    //   message: 'success',
+    //   data: rows
+    // });
+  // });
+// });
 
- //View All Employees
+};
+
+// View All Roles
+function viewAllRoles() {
+// app.get('/api/roles', (req, res) => {
+  const sql = `SELECT * FROM role`;
+
+  db.promise().query(sql) 
+  .then(([e]) => {
+    console.table(e);
+  })
+
+  // db.query(sql, (err, rows) => {
+  //   if (err) {
+  //     res.status(500).json({ error: err.message });
+  //     return;
+  //   }
+  //   res.json({
+  //     message: 'success',
+  //     data: rows
+  //   });
+  // });
+// });
+};
+
+// View All Employees
 app.get('/api/employees', (req, res) => {
-    const sql = `SELECT id, first_name, last_name, roles_id, manager_id AS title FROM employee`;
-    
-    db.query(sql, (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-         return;
-      }
-      res.json({
-        message: 'success',
-        data: rows
-      });
-    });
-  });
- 
-  //Add Department
-  app.post('/api/new-department', ({ body }, res) => {
-    const sql = `INSERT INTO department (dept_name)
-      VALUES (?)`;
-    const params = [body.dept_name];
-    
-    db.query(sql, params, (err, result) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({
-        message: 'success',
-        data: body
-      });
-    });
-  });
+  const sql = `SELECT id, first_name, last_name, roles_id, manager_id AS title FROM employee`;
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
   });
-  
-  start();
+});
+
+// Add Department
+function addDepartment() {
+// app.post('/api/new-department', (req, res) => {
+  // const params = [req.body.dept_name];
+
+  inquirer
+  .prompt([
+    {
+      type: 'input',
+      name: 'deptName',
+      message: 'What is the name of the new department?',
+    }
+  ])
+  .then (e => {
+
+    const sql = `INSERT INTO department (dept_name) SET ?`;
+
+    db.promise().query(sql, e.deptName) 
+    .then(([e]) => {
+    console.log(e);
+      })
+
+  })
+
+  // db.promise().query(sql, params) 
+  // .then(([e]) => {
+
+
+
+  //   // console.table(e);
+  // })
+
+  // db.query(sql, params, (err, result) => {
+  //   if (err) {
+  //     res.status(400).json({ error: err.message });
+  //     return;
+  //   }
+  //   res.json({
+  //     message: 'success',
+  //     data: req.body
+  //   });
+  // });
+// });
+};
+
+// Function to handle Inquirer actions
+function start() {
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: ['view all departments', 'view all roles', 'view all employees', 'add a department', 'add a role', 'add an employee', 'update an employee role']
+      }
+    ])
+    .then((data) => {
+      const action = data.action; // Get the user's action
+
+      switch (action) {
+        case 'view all departments':
+          viewAllDepartments(); 
+          break;
+        case 'view all roles':
+          viewAllRoles();
+          break;
+        case 'view all employees':
+          viewAllEmployees();
+          break;
+        case 'add a department':
+          addDepartment();
+          break;
+        default:
+          console.log('Invalid choice');
+          break;
+      }
+    });
+}
+
+// LISTEN FOR PORT
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
+
+// START INQUIRERER
+start();
