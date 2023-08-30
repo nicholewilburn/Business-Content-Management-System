@@ -79,6 +79,16 @@ function addRole() {
       type: 'input',
       name: 'role_title',
       message: 'What is the name of the new role?',
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: 'What is the salary of the new role?',
+    },
+    {
+      type: 'input',
+      name: 'department_id',
+      message: 'What is the department ID of the new role?',
     }
   ])
   .then (e => {
@@ -98,8 +108,23 @@ function addEmployee() {
   .prompt([
     {
       type: 'input',
-      name: 'emyployee_name',
-      message: 'What is the name of the new employee?',
+      name: 'first_name',
+      message: 'What is the first name of the new employee?',
+    },
+    {
+      type: 'input',
+      name: 'last_name',
+      message: 'What is the last name of the new employee?',
+    },
+    {
+      type: 'input',
+      name: 'role_id',
+      message: 'What is the role ID of the new employee?',
+    },
+    {
+      type: 'input',
+      name: 'manager_id',
+      message: 'What is the manager ID of the new employee?',
     }
   ])
   .then (e => {
@@ -119,46 +144,43 @@ function updateEmployeeRole() {
     .prompt([
       {
         type: 'input',
-        name: 'employee_name',
-        message: "What is the name of the employee whose role you want to update?",
+        name: 'employee_id',
+        message: "What is the id of the employee whose role you want to update?",
       },
       {
         type: 'input',
         name: 'new_role',
-        message: "What is the new role for the employee?",
+        message: "What is the new role ID for the employee?",
       },
     ])
     .then(answers => {
       const employeeName = answers.employee_name;
       const newRole = answers.new_role;
 
-      // Assuming you have a roles table with a 'role_id' column
-      // and an employees table with an 'employee_id' column and a 'role_id' column
-      const sql = "UPDATE employees SET role_id = ? WHERE employee_name = ?";
+      const sql = "UPDATE employees SET role_id = ? WHERE employee_id = ?";
 
-      // Fetch the role_id based on the new_role from the roles table
-      const roleSql = "SELECT role_id FROM roles WHERE role_name = ?";
+    //   db.promise().query(roleSql, [newRole])
+    //     .then(([rows]) => {
+    //       if (rows.length === 0) {
+    //         console.log("Role not found.");
+    //         return;
+    //       }
+    //       const roleId = rows[0].role_id;
 
-      db.promise().query(roleSql, [newRole])
-        .then(([rows]) => {
-          if (rows.length === 0) {
-            console.log("Role not found.");
-            return;
-          }
-          const roleId = rows[0].role_id;
+    //       db.promise().query(sql, [roleId, employeeName])
+    //         .then(() => {
+    //           console.log(`Successfully updated ${employeeName}'s role to ${newRole}`);
+    //           start();
+    //         })
+    //         .catch(error => {
+    //           console.error("Error updating employee's role:", error);
+    //         });
+    //     })
+    //     .catch(error => {
+    //       console.error("Error fetching role:", error);
+    //     });
+    // });
 
-          db.promise().query(sql, [roleId, employeeName])
-            .then(() => {
-              console.log(`Successfully updated ${employeeName}'s role to ${newRole}`);
-              start();
-            })
-            .catch(error => {
-              console.error("Error updating employee's role:", error);
-            });
-        })
-        .catch(error => {
-          console.error("Error fetching role:", error);
-        });
     });
 };
 
