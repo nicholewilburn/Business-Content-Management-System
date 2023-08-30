@@ -154,34 +154,23 @@ function updateEmployeeRole() {
       },
     ])
     .then(answers => {
-      const employeeName = answers.employee_name;
-      const newRole = answers.new_role;
 
-      const sql = "UPDATE employees SET role_id = ? WHERE employee_id = ?";
+      const { employee_id, new_role } = answers;
 
-    //   db.promise().query(roleSql, [newRole])
-    //     .then(([rows]) => {
-    //       if (rows.length === 0) {
-    //         console.log("Role not found.");
-    //         return;
-    //       }
-    //       const roleId = rows[0].role_id;
+      const sql = "UPDATE employee SET role_id = ? WHERE id = ?";
 
-    //       db.promise().query(sql, [roleId, employeeName])
-    //         .then(() => {
-    //           console.log(`Successfully updated ${employeeName}'s role to ${newRole}`);
-    //           start();
-    //         })
-    //         .catch(error => {
-    //           console.error("Error updating employee's role:", error);
-    //         });
-    //     })
-    //     .catch(error => {
-    //       console.error("Error fetching role:", error);
-    //     });
-    // });
-
-    });
+      db.promise().query(sql, [new_role, employee_id])
+      .then(() => {
+        console.log(sql);
+        console.log(`Employee's role updated successfully.`);
+        start();
+      })
+      .catch(error => {
+        console.log(sql);
+        console.error(`An error occurred: ${error.message}`);
+        start();
+      });
+});
 };
 
 // Function to handle Inquirer actions
