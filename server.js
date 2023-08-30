@@ -21,6 +21,7 @@ function viewAllDepartments() {
   db.promise().query(sql) 
   .then(([e]) => {
     console.table(e);
+    start();
   })
 
 };
@@ -33,6 +34,7 @@ function viewAllRoles() {
   db.promise().query(sql) 
   .then(([e]) => {
     console.table(e);
+    start();
   })
 };
 
@@ -44,6 +46,7 @@ function viewAllEmployees() {
   db.promise().query(sql) 
   .then(([e]) => {
     console.table(e);
+    start();
   })
 };
 
@@ -65,6 +68,97 @@ function addDepartment() {
       .then(() => start()
         )
   
+    });
+};
+
+//Add a Role
+function addRole() {
+  inquirer
+  .prompt([
+    {
+      type: 'input',
+      name: 'role_title',
+      message: 'What is the name of the new role?',
+    }
+  ])
+  .then (e => {
+
+    const sql = "INSERT INTO role SET ?";
+
+    db.promise().query(sql, e) 
+    .then(() => start()
+      )
+
+  });
+};
+
+//Add an Employee
+function addEmployee() {
+  inquirer
+  .prompt([
+    {
+      type: 'input',
+      name: 'emyployee_name',
+      message: 'What is the name of the new employee?',
+    }
+  ])
+  .then (e => {
+
+    const sql = "INSERT INTO employee SET ?";
+
+    db.promise().query(sql, e) 
+    .then(() => start()
+      )
+
+  });
+};
+
+//Update an Employee Role
+function updateEmployeeRole() {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'employee_name',
+        message: "What is the name of the employee whose role you want to update?",
+      },
+      {
+        type: 'input',
+        name: 'new_role',
+        message: "What is the new role for the employee?",
+      },
+    ])
+    .then(answers => {
+      const employeeName = answers.employee_name;
+      const newRole = answers.new_role;
+
+      // Assuming you have a roles table with a 'role_id' column
+      // and an employees table with an 'employee_id' column and a 'role_id' column
+      const sql = "UPDATE employees SET role_id = ? WHERE employee_name = ?";
+
+      // Fetch the role_id based on the new_role from the roles table
+      const roleSql = "SELECT role_id FROM roles WHERE role_name = ?";
+
+      db.promise().query(roleSql, [newRole])
+        .then(([rows]) => {
+          if (rows.length === 0) {
+            console.log("Role not found.");
+            return;
+          }
+          const roleId = rows[0].role_id;
+
+          db.promise().query(sql, [roleId, employeeName])
+            .then(() => {
+              console.log(`Successfully updated ${employeeName}'s role to ${newRole}`);
+              start();
+            })
+            .catch(error => {
+              console.error("Error updating employee's role:", error);
+            });
+        })
+        .catch(error => {
+          console.error("Error fetching role:", error);
+        });
     });
 };
 
@@ -95,6 +189,15 @@ function start() {
         case 'add a department':
           addDepartment();
           break;
+        case 'add a role':
+          addRole();
+          break;
+        case 'add an employee':
+          addEmployee();
+          break;
+        case 'update an employee role':
+          updateEmployeeRole();
+        break;
         default:
           console.log('Invalid choice');
           break;
