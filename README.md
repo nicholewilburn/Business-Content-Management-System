@@ -5,7 +5,6 @@
 * [Description](#description)
 * [User Story](#installIns)
 * [Acceptance Criteria](#usage)
-* [Sample Image](#contribution)
 * [Tutorial Video](#testIns)
 * [License](#license)
 * [Questions](#questions)
@@ -45,15 +44,10 @@ WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
 ```
 
-<a name="contribution"></a>
-## Sample Image
-
-Image Here
-
 <a name="testIns"></a>
 ## Tutorial Video
 
-Video here
+https://drive.google.com/file/d/1SyeMV6C2htrb9VX-_Bc-_m2nFMZXmVd0/view
 
 <a name="license"></a>
 ## License
